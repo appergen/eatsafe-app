@@ -1,7 +1,7 @@
-import { BlurView } from "expo-blur";
-import { View, Text, Button, StyleSheet, ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import axios from 'axios';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
 interface ScannedProductOverlayProps {
   barcodeData: string | null;
@@ -11,29 +11,35 @@ interface ScannedProductOverlayProps {
 interface Product {
   name: string;
   brand: string;
-  allergens: string[];
+  allergens: (string | undefined)[];
 }
 
 export default function ScannedProductOverlay({ barcodeData, onClose }: ScannedProductOverlayProps) {
   const [product, setProduct] = useState<Product | null>(null);
 
   if (!barcodeData) return null;
+  
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('Index', index);
+  }, []);
 
   console.log('Barcode:', barcodeData);
 
   useEffect(() => {
-    axios.get(`https://world.openfoodfacts.org/api/v3/product/${barcodeData}`, {
+    axios.get<GetProductById>(`https://world.openfoodfacts.org/api/v3/product/${barcodeData}`, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
       .then(({ data }) => {
         console.log(data);
-        setProduct({
+        setProduct(() => ({
           name: data.product?.product_name_fr ?? data.product.product_name,
           brand: data.product?.brands_tags?.[0] ?? data.product.brands,
           allergens: data.product?.allergens_tags.map((tag: string) => tag.split(':').shift())
-        })
+        }));
       })
   }, [barcodeData]);
 
@@ -45,15 +51,15 @@ export default function ScannedProductOverlay({ barcodeData, onClose }: ScannedP
 
   if (product) {
     return (
-    <BlurView intensity={60} style={styles.overlay} tint="dark">
-      <View style={styles.content}>
-        <Text style={styles.text}>Produit scanné :</Text>
-        <Text style={styles.barcode}>Nom: {product.name}</Text>
-        <Text style={styles.barcode}>Brand: {product.brand}</Text>
-        <Text style={styles.barcode}>Allergens: {product.allergens.join(', ')}</Text>
-        <Button title="Fermer" onPress={onClose} />
-      </View>
-    </BlurView>
+      <BottomSheet ref={bottomSheetRef} onChange={handleSheetChanges}>
+        <BottomSheetView style={styles.content}>
+          <Text style={styles.text}>Produit scanné :</Text>
+          <Text style={styles.barcode}>Nom: {product.name}</Text>
+          <Text style={styles.barcode}>Brand: {product.brand}</Text>
+          <Text style={styles.barcode}>Allergens: {product.allergens.join(', ')}</Text>
+          <Button title="Fermer" onPress={onClose} />
+        </BottomSheetView>
+      </BottomSheet>
     )
   }
 
@@ -69,24 +75,18 @@ export default function ScannedProductOverlay({ barcodeData, onClose }: ScannedP
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   content: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 20,
-    borderRadius: 10,
+    flex: 1,
+    padding: 36,
     alignItems: 'center',
   },
   text: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 10
   },
   barcode: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,

@@ -43,6 +43,15 @@ export default function HomeScreen() {
           barcodeTypes: ['codabar', 'ean13', 'qr']
         }}
         onBarcodeScanned={handleBarCodeScanned}
+        onResponderReject={() => console.log('onResponderReject')}
+        onResponderGrant={() => console.log('onResponderGrant')}
+        onResponderMove={() => console.log('onResponderMove')}
+        onResponderRelease={() => console.log('onResponderRelease')}
+        onResponderStart={() => console.log('onResponderStart')}
+        onResponderEnd={() => console.log('onResponderEnd')}
+        onCameraReady={() => console.log('onCameraReady')}
+        onMountError={() => console.log('onMountError')}
+        onLayout={() => console.log('onLayout')}
       >
       </CameraView>
       {scanned && (
