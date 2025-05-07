@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { View, Text, Button, StyleSheet, ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react" ;
 import axios from "axios";
 
 interface ScannedProductOverlayProps {
@@ -32,7 +32,7 @@ export default function ScannedProductOverlay({ barcodeData, onClose }: ScannedP
         setProduct({
           name: data.product?.product_name_fr ?? data.product.product_name,
           brand: data.product?.brands_tags?.[0] ?? data.product.brands,
-          allergens: data.product?.allergens_tags.map((tag: string) => tag.split(':').shift())
+          allergens: data.product?.allergens_tags.map((tag: string) => tag.split(':')[1])
         })
       })
   }, [barcodeData]);
