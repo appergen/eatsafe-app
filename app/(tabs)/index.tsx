@@ -2,10 +2,12 @@ import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ScannedProductOverlay from '@/components/ScannedProductOverlay';
+import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import ScannedProductOverlay from '@/components/ScannedProductOverlay';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [barcodeData, setBarcodeData] = useState<string | null>(null);
@@ -39,6 +41,10 @@ export default function HomeScreen() {
     setScanned(true);
     setBarcodeData(data);
     console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
+    router.push({
+      pathname: '/modal',
+      params: { code: data }
+    })
   }
 
   return (
