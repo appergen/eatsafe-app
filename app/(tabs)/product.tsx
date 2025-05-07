@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
+import "../../assets/icons/";
 
 interface Allergen {
   id: string;
   name: string;
   description: string;
-  icon: any;
+  icon: React.FC;
 }
 
 interface Product {
@@ -47,7 +48,7 @@ const ProductScreen = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <View style={styles.allergenCard}>
-                  <Image source={item.icon} style={styles.allergenIcon} />
+                  <item.icon width={40} height={40} />
                   <View style={styles.allergenDetails}>
                     <Text style={styles.allergenName}>{item.name}</Text>
                     <Text style={styles.allergenDescription}>{item.description}</Text>
@@ -107,11 +108,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: "#eee",
-  },
-  allergenIcon: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
   },
   allergenDetails: {
     flex: 1,

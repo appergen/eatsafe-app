@@ -3,7 +3,9 @@ import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from "react
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-
+import MilkIcon from "../../assets/icons/milk.svg";
+import PeanutIcon from "../../assets/icons/peanut.svg";
+import GlutenIcon from "../../assets/icons/gluten.svg";
 interface Product_scan {
   id: string;
   image: any;
@@ -46,6 +48,20 @@ const HistoryScreen = () => {
           name: "Chocolat Noir",
           pastille: "safe",
           date: "2025-03-04 14:30",
+          allergens: [
+            {
+              id: "1",
+              name: "Lait",
+              description: "Peut contenir des traces de lait.",
+              icon: MilkIcon,
+            },
+            {
+              id: "2",
+              name: "Noisettes",
+              description: "Contient des noisettes.",
+              icon: PeanutIcon,
+            },
+          ],
         },
         {
           id: "2",
@@ -53,6 +69,8 @@ const HistoryScreen = () => {
           name: "Yaourt Fraise",
           pastille: "warning",
           date: "2025-03-03 16:45",
+          allergens: [
+          ],
         },
         {
           id: "3",
@@ -60,6 +78,20 @@ const HistoryScreen = () => {
           name: "Biscuits Arachide",
           pastille: "danger",
           date: "2025-03-02 10:15",
+          allergens: [
+            {
+              id: "4",
+              name: "Arachides",
+              description: "Contient des arachides.",
+              icon: PeanutIcon,
+            },
+            {
+              id: "5",
+              name: "Gluten",
+              description: "Contient du gluten.",
+              icon: GlutenIcon,
+            },
+          ],
         },
       ];
 
