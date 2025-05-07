@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { View, Text, Button, StyleSheet, ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react" ;
 import axios from "axios";
 
 interface ScannedProductOverlayProps {
