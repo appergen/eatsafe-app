@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-interface Product {
+interface Product_scan {
   id: string;
-  image: any; 
+  image: any;
   name: string;
   pastille: "safe" | "warning" | "danger";
   date: string;
 }
+
+// Définir les types des routes
+type RootStackParamList = {
+  product: { product: Product_scan };
+  history: undefined;
+};
+
+type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, "history">;
 
 const getPastilleStyle = (level: string) => {
   switch (level) {
@@ -24,12 +34,12 @@ const getPastilleStyle = (level: string) => {
 };
 
 const HistoryScreen = () => {
-  const [history, setHistory] = useState<Product[]>([]);
+  const [history, setHistory] = useState<Product_scan[]>([]);
+  const navigation = useNavigation<HistoryScreenNavigationProp>();
 
   useEffect(() => {
-
     const addTestData = async () => {
-      const testHistory: Product[] = [
+      const testHistory: Product_scan[] = [
         {
           id: "1",
           image: require("../../images/chocolat noir.jpg"),
@@ -53,7 +63,6 @@ const HistoryScreen = () => {
         },
       ];
 
-      
       await AsyncStorage.setItem("scanHistory", JSON.stringify(testHistory));
       setHistory(testHistory);
     };
@@ -72,28 +81,32 @@ const HistoryScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Historique des scans</Text>
-      <FlatList
-        data={history}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          const pastille = getPastilleStyle(item.pastille);
-          return (
-            <View style={styles.card}>
-              <Image source={item.image} style={styles.image} /> {/* ✅ Correction ici */}
-              <View style={styles.details}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={[styles.pastille, { color: pastille.color }]}>
-                  {pastille.text}
-                </Text>
-                <Text style={styles.date}>Scanné le : {item.date}</Text>
-              </View>
-            </View>
-          );
-        }}
-      />
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.title}>Historique des scans</Text>
+        <FlatList
+            data={history}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              const pastille = getPastilleStyle(item.pastille);
+              return (
+                  <TouchableOpacity
+                      onPress={() => navigation.navigate("product", { product: item })}
+                  >
+                    <View style={styles.card}>
+                      <Image source={item.image} style={styles.image} />
+                      <View style={styles.details}>
+                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={[styles.pastille, { color: pastille.color }]}>
+                          {pastille.text}
+                        </Text>
+                        <Text style={styles.date}>Scanné le : {item.date}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              );
+            }}
+        />
+      </View>
   );
 };
 
