@@ -19,6 +19,10 @@ type RootStackParamList = {
 };
 
 type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, "history">;
+const chocolatImage = require("../../images/chocolat_noir.jpg");
+const yaourtImage = require("../../images/yaourt_fraise.jpg");
+const biscuitsImage = require("../../images/Biscuits_archide.jpg");
+
 
 const getPastilleStyle = (level: string) => {
   switch (level) {
@@ -38,40 +42,43 @@ const HistoryScreen = () => {
   const navigation = useNavigation<HistoryScreenNavigationProp>();
 
   useEffect(() => {
+    console.log("Le composant HistoryScreen est monté");
     const addTestData = async () => {
+    
       const testHistory: Product_scan[] = [
         {
           id: "1",
-          image: require("../../images/chocolat noir.jpg"),
+          image: chocolatImage,
+          
           name: "Chocolat Noir",
           pastille: "safe",
           date: "2025-03-04 14:30",
         },
         {
           id: "2",
-          image: require("../../images/yaourt fraise.jpg"),
+          image: yaourtImage,
           name: "Yaourt Fraise",
           pastille: "warning",
           date: "2025-03-03 16:45",
         },
         {
           id: "3",
-          image: require("../../images/Biscuits archide.jpg"),
+          image: biscuitsImage,
           name: "Biscuits Arachide",
           pastille: "danger",
           date: "2025-03-02 10:15",
         },
       ];
-
+      
       await AsyncStorage.setItem("scanHistory", JSON.stringify(testHistory));
       setHistory(testHistory);
     };
 
     const fetchHistory = async () => {
-      await AsyncStorage.clear();
+    
       const storedHistory = await AsyncStorage.getItem("scanHistory");
       if (!storedHistory) {
-        await addTestData(); // Ajoute les données factices si l'historique est vide
+        await addTestData(); 
       } else {
         setHistory(JSON.parse(storedHistory));
       }
