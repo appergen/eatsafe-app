@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
-import Svg, { Path , Circle, Rect} from 'react-native-svg';
+import Svg, { Path , Circle} from 'react-native-svg';
 
 
 interface Allergen {
@@ -81,7 +81,7 @@ const HazelnutIcon = () => (
 
 // Exemple de données de test
 const testProduct: Product = {
-  image: require("../../images/chocolat noir.jpg"),
+  image: require("../../images/chocolat_noir.jpg"),
   name: "Chocolat Noir",
   brand: "cote d'or",
   allergens: [
