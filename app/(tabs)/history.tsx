@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";  
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -14,7 +14,6 @@ interface Product_scan {
   date: string;
 }
 
-// Définir les types des routes
 type RootStackParamList = {
   product: { product: Product_scan };
   history: undefined;
@@ -29,11 +28,11 @@ const biscuitsImage = require("../../images/Biscuits_archide.jpg");
 const getPastilleStyle = (level: string) => {
   switch (level) {
     case "safe":
-      return { color: "green", text: "Sûr 🟢" };
+      return { color: "#62B55C", text: "Sûr 🟢" };
     case "warning":
       return { color: "orange", text: "Risque potentiel 🟡" };
     case "danger":
-      return { color: "red", text: "Dangereux 🔴" };
+      return { color: "#FF1D1D", text: "Dangereux 🔴" };
     default:
       return { color: "gray", text: "Inconnu ⚪" };
   }
@@ -50,10 +49,9 @@ const HistoryScreen = () => {
       const testHistory: Product_scan[] = [
         {
           id: "1",
-          image: chocolatImage,
-          
+          image: require("../../images/chocolat noir.jpg"),
           name: "Chocolat Noir",
-          pastille: "safe",
+          pastille: "danger",
           date: "2025-03-04 14:30",
           allergens: [
             {
@@ -72,18 +70,18 @@ const HistoryScreen = () => {
         },
         {
           id: "2",
-          image: yaourtImage,
+          image: require("../../images/yaourt fraise.jpg"),
           name: "Yaourt Fraise",
-          pastille: "warning",
+          pastille: "danger",
           date: "2025-03-03 16:45",
           allergens: [
           ],
         },
         {
           id: "3",
-          image: biscuitsImage,
+          image: require("../../images/Biscuits archide.jpg"),
           name: "Biscuits Arachide",
-          pastille: "danger",
+          pastille: "safe",
           date: "2025-03-02 10:15",
           allergens: [
             {
@@ -100,6 +98,20 @@ const HistoryScreen = () => {
             },
           ],
         },
+        {
+          id: "4",
+          image: require("../../images/yaourt fraise.jpg"),
+          name: "LE MOELLEUX DOUX\nMatatie",
+          pastille: "safe",
+          date: "2025-03-01 11:10",
+        },
+        {
+          id: "5",
+          image: require("../../images/chocolat noir.jpg"),
+          name: "Kinder Bueno\nSodebo",
+          pastille: "danger",
+          date: "2025-02-28 09:00",
+        },
       ];
       
       await AsyncStorage.setItem("scanHistory", JSON.stringify(testHistory));
@@ -110,7 +122,7 @@ const HistoryScreen = () => {
     
       const storedHistory = await AsyncStorage.getItem("scanHistory");
       if (!storedHistory) {
-        await addTestData(); 
+        await addTestData();
       } else {
         setHistory(JSON.parse(storedHistory));
       }
@@ -120,81 +132,79 @@ const HistoryScreen = () => {
   }, []);
 
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Historique des scans</Text>
-        <FlatList
-            data={history}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              const pastille = getPastilleStyle(item.pastille);
-              return (
-                  <TouchableOpacity
-                      onPress={() => navigation.navigate("product", { product: item })}
-                  >
-                    <View style={styles.card}>
-                      <Image source={item.image} style={styles.image} />
-                      <View style={styles.details}>
-                        <Text style={styles.name}>{item.name}</Text>
-                        <Text style={[styles.pastille, { color: pastille.color }]}>
-                          {pastille.text}
-                        </Text>
-                        <Text style={styles.date}>Scanné le : {item.date}</Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-              );
-            }}
-        />
-      </View>
+    <View style={styles.container}>
+      <FlatList
+        data={history}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          const pastille = getPastilleStyle(item.pastille);
+          const [productName, brand] = item.name.split('\n');
+
+          return (
+            <TouchableOpacity onPress={() => navigation.navigate("product", { product: item })}>
+              <View style={styles.card}>
+                <Image source={item.image} style={styles.image} />
+                <View style={styles.details}>
+                  <Text style={styles.name}>{productName}</Text>
+                  {brand && <Text style={styles.brand}>{brand}</Text>}
+                  <View style={[styles.pastille, { backgroundColor: pastille.color }]} />
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f4f4f4",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 50,
-    marginBottom: 20,
+    paddingHorizontal: 15,
+    paddingTop: 20,
+    backgroundColor: "#ffffff",
   },
   card: {
     flexDirection: "row",
-    backgroundColor: "#fff",
     alignItems: "center",
-    marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
-    padding: 10,
+    marginBottom: 15,
+    borderBottomWidth: 0.8,  
+    borderBottomColor: "#ccc",
+    paddingBottom: 10,
+    paddingHorizontal: 5,
+    width: "90%",           // <-- Réduit la largeur
+    alignSelf: "center",
   },
   image: {
-    width: 80,
+    width: 50,
     height: 80,
-    borderRadius: 10,
+    resizeMode: "contain",
     marginRight: 15,
   },
   details: {
     flex: 1,
   },
   name: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
-    paddingBottom: 5,
+    color: "#000000",
+    fontFamily: "Futura-Bold",
+  },
+  brand: {
+    color: "gray",
+    fontSize: 14,
+    marginTop: 2,
+    fontFamily: "Inter-ExtraLight",
   },
   pastille: {
-    fontSize: 14,
-    fontWeight: "bold",
-    paddingBottom: 5,
+    width: 15,
+    height: 15,
+    borderRadius: 10,
+    marginTop: 6,
   },
   date: {
-    fontSize: 12,
-    color: "gray",
+    display: "none",
   },
 });
 
