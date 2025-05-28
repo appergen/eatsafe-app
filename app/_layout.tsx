@@ -3,7 +3,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import HistoryScreen from "./(tabs)/history";
+
 import ProductScreen from "./(tabs)/product";
+
 
 const Stack = createStackNavigator();
 
@@ -28,13 +30,14 @@ const AppNavigator = () => {
           title: "Historique",
           headerTitleStyle: { color: '#62B55C', fontSize: 24, fontFamily: 'Futura Bold' },
           headerTitleAlign: 'left',
+          headerShadowVisible: false,
           headerLeft: () => <BackButton />
         }}
       />
       <Stack.Screen
         name="product"
         component={ProductScreen}
-        options={{ headerShown: true, title: "Produit" }}
+        options={{ headerShown: true, headerShadowVisible: false, title: "Produit" }}
       />
     </Stack.Navigator>
   );

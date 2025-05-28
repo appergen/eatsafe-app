@@ -3,7 +3,9 @@ import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from "react
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-
+import MilkIcon from "../../assets/icons/milk.svg";
+import PeanutIcon from "../../assets/icons/peanut.svg";
+import GlutenIcon from "../../assets/icons/gluten.svg";
 interface Product_scan {
   id: string;
   image: any;
@@ -18,6 +20,10 @@ type RootStackParamList = {
 };
 
 type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, "history">;
+const chocolatImage = require("../../images/chocolat_noir.jpg");
+const yaourtImage = require("../../images/yaourt_fraise.jpg");
+const biscuitsImage = require("../../images/Biscuits_archide.jpg");
+
 
 const getPastilleStyle = (level: string) => {
   switch (level) {
@@ -37,28 +43,60 @@ const HistoryScreen = () => {
   const navigation = useNavigation<HistoryScreenNavigationProp>();
 
   useEffect(() => {
+    console.log("Le composant HistoryScreen est monté");
     const addTestData = async () => {
+    
       const testHistory: Product_scan[] = [
         {
           id: "1",
           image: require("../../images/chocolat noir.jpg"),
-          name: "NESQUICK SHAKE\nNestlé",
+          name: "Chocolat Noir",
           pastille: "danger",
           date: "2025-03-04 14:30",
+          allergens: [
+            {
+              id: "1",
+              name: "Lait",
+              description: "Peut contenir des traces de lait.",
+              icon: MilkIcon,
+            },
+            {
+              id: "2",
+              name: "Noisettes",
+              description: "Contient des noisettes.",
+              icon: PeanutIcon,
+            },
+          ],
         },
         {
           id: "2",
           image: require("../../images/yaourt fraise.jpg"),
-          name: "SUÉDOIS DUO DE SAUMON\nSodebo",
+          name: "Yaourt Fraise",
           pastille: "danger",
           date: "2025-03-03 16:45",
+          allergens: [
+          ],
         },
         {
           id: "3",
           image: require("../../images/Biscuits archide.jpg"),
-          name: "S.PELLEGRINO NATURE\nSan Pellegrino",
+          name: "Biscuits Arachide",
           pastille: "safe",
           date: "2025-03-02 10:15",
+          allergens: [
+            {
+              id: "4",
+              name: "Arachides",
+              description: "Contient des arachides.",
+              icon: PeanutIcon,
+            },
+            {
+              id: "5",
+              name: "Gluten",
+              description: "Contient du gluten.",
+              icon: GlutenIcon,
+            },
+          ],
         },
         {
           id: "4",
@@ -75,13 +113,13 @@ const HistoryScreen = () => {
           date: "2025-02-28 09:00",
         },
       ];
-
+      
       await AsyncStorage.setItem("scanHistory", JSON.stringify(testHistory));
       setHistory(testHistory);
     };
 
     const fetchHistory = async () => {
-      await AsyncStorage.clear();
+    
       const storedHistory = await AsyncStorage.getItem("scanHistory");
       if (!storedHistory) {
         await addTestData();
