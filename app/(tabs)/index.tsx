@@ -1,16 +1,16 @@
 import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import ScannedProductOverlay from '@/components/ScannedProductOverlay';
 
 export default function HomeScreen() {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [barcodeData, setBarcodeData] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!permission) return;
@@ -36,9 +36,13 @@ export default function HomeScreen() {
     )
   }
 
-  const handleBarCodeScanned = ({ type, data }: { type: string, data: string }) => {
+  const handleBarCodeScanned = ({ type, data }: Pick<BarcodeScanningResult, 'type' | 'data'>) => {
+    if (barcodeData === data) {
+      return console.log('Same barcode scanned again');
+    }
     if (scanned) return console.log('Scan already in progress');
     setScanned(true);
+    setTimeout(() => setScanned(false), 5000); // Reset scanned state after 5 seconds
     setBarcodeData(data);
     console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
     router.push({
@@ -46,38 +50,44 @@ export default function HomeScreen() {
       params: { code: data }
     })
   }
-
+ 
   return (
     <View style={{ flex: 1 }}>
-      <SafeAreaView style={styles.containerHistory}>
-        <TouchableOpacity style={styles.buttonHistory} onPress={(() => console.log('Icon pushed'))}>
-          <MaterialIcons name="history" size={32} color="#fff" />
-        </TouchableOpacity>
-      </SafeAreaView>
-
-      <View style={styles.container}>
+      <TouchableOpacity style={[styles.buttonHistory, {
+        position: 'absolute',
+        right: 20,
+        top: insets.top + 10, // prend en compte l'encoche
+        zIndex: 99
+      }]} onPress={(() => console.log('Icon pushed'))}>
+        <MaterialIcons name="history" size={32} color="#fff" />
+      </TouchableOpacity>
+      <View style={styles.containerCameraView}>
         <CameraView
           style={styles.camera}
           facing='back' 
           barcodeScannerSettings={{
-            barcodeTypes: ['codabar', 'ean13', 'qr']
+            barcodeTypes: ['ean13']
           }}
           onBarcodeScanned={handleBarCodeScanned}
-        >
-        </CameraView>
-        {scanned && (
-          <ScannedProductOverlay barcodeData={barcodeData} onClose={() => {
-            setScanned(false);
-            setBarcodeData(null);
-          }}/>
-        )}
+        />
+      </View>
+
+      <View style={styles.scanOverlay}>
+        <View style={styles.scanFrame}>
+          {/* Coins du cadre */}
+          <View style={styles.cornerTopLeft} />
+          <View style={styles.cornerTopRight} />
+          <View style={styles.cornerBottomLeft} />
+          <View style={styles.cornerBottomRight} />
+        </View>
+        <Text style={styles.scanText}>Placez le code-barres ici</Text>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerCameraView: {
     flex: 1,
     justifyContent: 'center',
   },
@@ -86,12 +96,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center'
-  },
-  containerHistory: {
-    zIndex: 99,
-    position: 'absolute',
-    right: 20,
-    top: 10
   },
   buttonHistory: {
     flex: 1,
@@ -103,11 +107,75 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   camera: {
+    ...StyleSheet.absoluteFillObject,
     flex: 1
   },
   containerLoader: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  scanOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  scanFrame: {
+    width: 250,
+    height: 150,
+    borderColor: 'transparent',
+    position: 'relative',
+  },
+
+  scanText: {
+    color: 'white',
+    marginTop: 16,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
+  cornerTopLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 30,
+    height: 30,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#fff',
+  },
+
+  cornerTopRight: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 30,
+    height: 30,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderColor: '#fff',
+  },
+
+  cornerBottomLeft: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 30,
+    height: 30,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#fff',
+  },
+
+  cornerBottomRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 30,
+    height: 30,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderColor: '#fff',
+  },
 });

@@ -15,12 +15,13 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@react-navigation/elements": "^2.4.1",
-    "@react-navigation/stack": "^7.2.10",
     "@expo/vector-icons": "^14.1.0",
+    "@faker-js/faker": "^9.8.0",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.12",
+    "@react-navigation/elements": "^2.4.1",
     "@react-navigation/native": "^7.1.8",
+    "@react-navigation/stack": "^7.2.10",
     "axios": "^1.7.9",
     "expo": "^53.0.8",
     "expo-barcode-scanner": "^13.0.1",
@@ -40,7 +41,9 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-reanimated": "~3.17.5",
+    "react-native-modalize": "^2.1.1",
+    "react-native-portalize": "^1.0.7",
+    "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-vector-icons": "^10.2.0",
@@ -58,5 +61,5 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

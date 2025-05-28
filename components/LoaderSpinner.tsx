@@ -1,6 +1,14 @@
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
-export function LoaderSpinner({ size = 'large', color = '#3498db' }) {
+interface LoaderSpinnerProps {
+  size?: number | "small" | "large" | undefined,
+  color?: string
+}
+
+export function LoaderSpinner({ size, color }: LoaderSpinnerProps = {
+  size: "large",
+  color: "#0000ff"
+}) {
   return (
     <View>
       <ActivityIndicator size={size} color={color} />
