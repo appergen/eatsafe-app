@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HistoryScreen from "./(tabs)/history";
 import ProductScreen from "./(tabs)/product";
 
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -11,12 +12,12 @@ const AppNavigator = () => {
         <Stack.Screen
             name="history"
             component={HistoryScreen}
-            options={{ headerShown: true, title: "Historique" }}
+            options={{ headerShown: true, headerShadowVisible: false, title: "Historique" }}
         />
         <Stack.Screen
             name="product"
             component={ProductScreen}
-            options={{ headerShown: true, title: "Produit" }}
+            options={{ headerShown: true, headerShadowVisible: false , title: "Produit" }}
         />
       </Stack.Navigator>
   );

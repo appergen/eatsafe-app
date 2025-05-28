@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import Svg, { Path , Circle, Rect} from 'react-native-svg';
 
+
 interface Allergen {
   id: string;
   name: string;
@@ -38,10 +39,13 @@ const ProductScreen = () => {
 
   return (
       <View style={styles.container}>
-        <Image source={product.image} style={styles.image} />
-        <Text style={styles.name}>{product.name.toUpperCase()}</Text>
-        <Text style={styles.brand}>{product.brand}</Text>
-
+        <View style={styles.row}>
+          <Image source={product.image} style={styles.image} />
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>{product.name.toUpperCase()}</Text>
+            <Text style={styles.brand}>{product.brand}</Text>
+          </View>
+        </View>
         <Text style={styles.allergenTitle}>Allergènes présents</Text>
         <FlatList
             data={product.allergens}
@@ -79,7 +83,7 @@ const HazelnutIcon = () => (
 const testProduct: Product = {
   image: require("../../images/chocolat noir.jpg"),
   name: "Chocolat Noir",
-  brand: "Exemple",
+  brand: "cote d'or",
   allergens: [
     {
       id: "1",
@@ -108,42 +112,45 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 50,
   },
+  row: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
   image: {
-    width: 150,
-    height: 200,
-    alignSelf: "center",
+    width: 140,
+    height: 180,
     marginBottom: 20,
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: 5,
   },
   brand: {
     fontSize: 16,
     color: "#555",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: 20,
   },
   allergenTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
     textAlign: "center",
     marginBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-    paddingBottom: 5,
+    paddingBottom: 10,
   },
   allergenCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
     padding: 10,
     borderRadius: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#eee",
+    marginTop: 10,
   },
   iconContainer: {
     marginRight: 10,
@@ -157,9 +164,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   allergenName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   allergenDescription: {
     fontSize: 14,
